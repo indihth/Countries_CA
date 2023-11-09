@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Row } from "react-bootstrap";
+import { Row, Spinner } from "react-bootstrap";
+import Pagination from "react-bootstrap/Pagination";
 
+// Import Components
 import CountryCard from "../components/CountryCard";
+import Search from "../components/Search";
 
 const COUNTRIES_URL = "https://restcountries.com/v3.1";
 
@@ -12,8 +15,11 @@ const Home = (props) => {
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [countriesRegionList, setCountriesRegionList] = useState([]);
 
-  // Blank search term by default
-  // const [term, setTerm] = useState("");
+  // set filter region
+  const [filterRegion, setFilterRegion] = useState("All");
+
+  // Lifting state up for use in multiple child components
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Gets all countries
   useEffect(() => {
@@ -28,48 +34,55 @@ const Home = (props) => {
       });
   }, []);
 
-  // set Country Search to use filteredCountries list to restrict to filtered
-  // But how to reset list if search term is removed, live typing search
+  // Search
   useEffect(() => {
-    if (props.searchTerm < 3) {
+    if (searchTerm < 3) {
       // Doesn't start showing filtered countries until 3 characters inputted
-      // setFilteredCountries(countriesList);
-      // setFilteredCountries(countriesList);
       filterRegions();
     } else {
       let filter = filteredCountries.filter((country) => {
         // name of country and search term to lower case before filter
         return country.name.common
           .toLowerCase()
-          .includes(props.searchTerm.toLowerCase());
+          .startsWith(searchTerm.toLowerCase());
       });
       setFilteredCountries(filter);
     }
+  }, [countriesList, searchTerm]);
 
-    // Dependencies - runs useEffect when the searchTerm changes
-  }, [countriesList, props.searchTerm]);
-
+  // Region Search
   useEffect(() => {
     filterRegions();
     // }, []);
-  }, [countriesList, props.filterRegion]);
+  }, [countriesList, filterRegion]);
 
   const filterRegions = () => {
-    if (props.filterRegion === "All" || props.filterRegion === "") {
+    if (filterRegion === "All" || filterRegion === "") {
       setFilteredCountries(countriesList);
     } else {
       let filter = countriesList.filter((country) => {
-        return country.region === props.filterRegion;
+        return country.region === filterRegion;
       });
       setFilteredCountries(filter);
     }
   };
 
+  // Event
+  const onHandleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter Region handler
+  const onFilterRegion = (e) => {
+    setFilterRegion(e.target.value);
+  };
+
   // Impliment sorting - asc/desc,
 
-  let countryCards = filteredCountries.map((country, i) => {
+  const countryCards = filteredCountries ? (
+
+  filteredCountries.map((country, i) => {
     return (
-      // <Col className="mx-auto">
       <CountryCard
         key={i}
         flag={country.flags.svg}
@@ -79,28 +92,20 @@ const Home = (props) => {
         capital={country.capital}
         population={country.population}
       />
-      // </Col>
     );
-  });
+  })
+  ) : (
+    <Spinner />
+  );
 
   return (
     <>
-      {/* <Row className="g-4 mb-5" md={3} xs={1}>
-        <Col>
-          <input
-            type="text"
-            value={term}
-            onChange={handleChange}
-            onKeyUp={handleKeyUp}
-          />
-          <Button variant="primary" onClick={handleClick}>
-            Search
-          </Button>
-        </Col>
-        <Col>
-          <Filter className="mb-3" />
-        </Col>
-      </Row> */}
+      {/* Passing down function as prop to nav */}
+      <Search
+        onHandleChange={onHandleChange}
+        searchTerm={searchTerm}
+        onFilterRegion={onFilterRegion}
+      />
       <Row className="g-4 justify-contend-start" md={3} xs={1}>
         {countryCards}
       </Row>

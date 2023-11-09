@@ -30,6 +30,7 @@ const CountryCard = (props) => {
       <Card.Body className="px-4">
         <Card.Title className="fs-5 mb-3">
           <Link to={`/country/${props.name}`}  style={styles.link}> {props.name} </Link>
+          {/* <Link to={`/country/${props.name}`}  style={styles.link}> {props.name} </Link> */}
         </Card.Title>
         <Card.Text style={styles.cardText}>Population: {props.population.toLocaleString()}</Card.Text>
         <Card.Text style={styles.cardText}>Region: {props.region}</Card.Text>

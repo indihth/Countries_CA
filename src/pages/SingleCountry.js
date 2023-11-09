@@ -2,8 +2,11 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Row, Col, Spinner, Image } from "react-bootstrap";
+import { Row, Col, Spinner, Image, } from "react-bootstrap";
 import CountryExtra from "../components/CountryExtra";
+
+// Defind API key
+const APIKEY = "rjPctvKzPIKN5jiG61ubySPYQ4VQ40E5";
 
 const SingleCountry = () => {
   // References the route param from App.js Route
@@ -11,6 +14,7 @@ const SingleCountry = () => {
 
   const [countriesList, setCountriesList] = useState([]);
   const [country, setCountry] = useState("");
+  const [holidays, setHolidays] = useState();
 
   useEffect(() => {
     axios
@@ -29,14 +33,29 @@ const SingleCountry = () => {
     axios
       .get(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
       .then((response) => {
-        // console.log(response.data[0]);
         setCountry(response.data[0]);
       })
-      .catch((error) => {
-        console.error();
-        console.log("not a country");
+      .catch((err) => {
+        console.error(err);
       });
   }, []);
+
+  // Optional chaining to safely access nested properties
+  const countryCCA2 = country?.cca2?.toLowerCase();
+
+  useEffect(() => {
+    // Check if countryCCA2 is defined before making the API call
+    if (countryCCA2) {
+      axios
+        .get(
+          `https://calendarific.com/api/v2/holidays?&api_key=${APIKEY}&country=${countryCCA2}&year=2023`
+        )
+        .then((res) => {
+          setHolidays(res.data.response.holidays);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [countryCCA2]); // Include countryCCA2 as a dependency to the second useEffect
 
   if (!country) {
     return <Spinner />;
@@ -86,8 +105,20 @@ const SingleCountry = () => {
     return newCountries.join(", ");
   };
 
+  const holidaysCards = holidays ? (
+
+    // Limits to showing only 5 holidays
+    holidays.slice(0, 5).map((holiday, i) => (
+      <CountryExtra key={i} holiday={holiday} />
+    ))
+    
+  ) : (
+    <Spinner />
+  );
+
   return (
     <>
+
       <Row>
         <Col>
           <Image src={country.flags.png} />
@@ -112,7 +143,6 @@ const SingleCountry = () => {
             </Col>
             <Col>
               <p>
-                {/* <b>Currency:</b> {Object.values(country.currencies)[0].name} */}
                 <b>Currency:</b> {getCurrencies()}
               </p>
             </Col>
@@ -125,7 +155,8 @@ const SingleCountry = () => {
 
       {/* Additional Country Info - 2nd API */}
       <Row>
-        <CountryExtra />
+      <h3>Country Holidays</h3>
+        {holidaysCards}
       </Row>
     </>
   );

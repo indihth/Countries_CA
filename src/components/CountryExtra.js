@@ -1,52 +1,23 @@
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import { useState, useEffect } from "react";
 import { Col } from "react-bootstrap";
 
-const APIKEY = "8wE3H9KB/1WXOFlZhgHBFQ==vlritFsAYFRkiTDg";
+const CountryExtra = ({ holiday }) => {
 
-const CountryExtra = () => {
-  let { name } = useParams();
+  // Stores the datetime object in variable - year, month and day
+  const datetime = holiday.date.datetime;
 
-  const [details, setDetails] = useState();
-
-  useEffect(() => {
-    axios
-      .get(`https://api.api-ninjas.com/v1/country?name=${name}`, {
-        headers: { "X-Api-Key": APIKEY },
-      })
-      .then((res) => {
-        setDetails(res.data[0]);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
-  const lifeExpectancy = () => {
-    if (details.life_expectancy_female && details.life_expectancy_male) {
-      return (
-        <>
-          <h5>Life Expectancy</h5>
-          <p>
-            <b>Female: </b>
-            {details.life_expectancy_female} years | <b>Male: </b>
-            {details.life_expectancy_male} years
-          </p>
-          <br />
-        </>
-      );
-    }
-  };
-
+  // Create a new js Date object
+  const formattedDate = new Date(
+    datetime.year,
+    datetime.month - 1, // Month is 0-based in JavaScript Date object
+    datetime.day
+  ).toLocaleDateString('en-BG', {
+    // Defines how the date will be formatted
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   return (
-    <>
-      <Col>
-        <h3>Population Information</h3>
-        <br />
-        {lifeExpectancy}
-        {/* <h5>Unemplyment - {details.unemployment}%</h5>
-        <h5>Co2 Emmssions - {details.co2_emissions} tons</h5> */}
-      </Col>
-    </>
+      <p><b>{holiday.name}</b> - {formattedDate}</p>
   );
 };
 
