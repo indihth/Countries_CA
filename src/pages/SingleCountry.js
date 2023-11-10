@@ -2,8 +2,11 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Row, Col, Spinner, Image, } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Image, Button } from "react-bootstrap";
+
+// Import components
 import CountryExtra from "../components/CountryExtra";
+import AnimatedPage from "../components/AnimatedPage";
 
 // Defind API key
 const APIKEY = "rjPctvKzPIKN5jiG61ubySPYQ4VQ40E5";
@@ -15,6 +18,9 @@ const SingleCountry = () => {
   const [countriesList, setCountriesList] = useState([]);
   const [country, setCountry] = useState("");
   const [holidays, setHolidays] = useState();
+
+  // Button to switch between info cards
+  let toggle = true;
 
   useEffect(() => {
     axios
@@ -105,60 +111,68 @@ const SingleCountry = () => {
     return newCountries.join(", ");
   };
 
-  const holidaysCards = holidays ? (
-
-    // Limits to showing only 5 holidays
-    holidays.slice(0, 5).map((holiday, i) => (
-      <CountryExtra key={i} holiday={holiday} />
-    ))
-    
+  const countryInfo = country ? (
+    <Row className="mb-3">
+      <div className="d-flex justify-content-center mb-5 px-5">
+        <Image src={country.flags.svg} fluid rounded />
+      </div>
+      <div className="d-flex justify-content-center mb-3">
+        <h2 className="mx-auto">{country.name.common}</h2>
+      </div>
+      <div>
+        <div>
+          <p>
+            <b>Official Name:</b> {country.name.official}
+          </p>
+          <p>
+            <b>Region:</b> {country.region}
+          </p>
+          <p>
+            <b>Subregion:</b> {country.subregion}
+          </p>
+          {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
+          <p>
+            <b>Languages:</b> {getLanguages()}
+          </p>
+          <p>
+            <b>Currency:</b> {getCurrencies()}
+          </p>
+          <p>
+            <b>Bordering Countries:</b> {getBorderCountries()}
+          </p>
+        </div>
+      </div>
+    </Row>
   ) : (
     <Spinner />
   );
 
+  const holidaysCards = holidays ? (
+    // Limits to showing only 5 holidays
+    holidays
+      .slice(0, 5)
+      .map((holiday, i) => <CountryExtra key={i} holiday={holiday} />)
+  ) : (
+    <Spinner />
+  );
+
+  const handleClick = () => {
+    toggle = !toggle;
+  }
+
   return (
-    <>
+    <AnimatedPage>
+      <Container style={{ width: "50%" }} className="pt-5 mt-5">
+        <Button onClick={handleClick}>Click</Button>
+        <Row className="mb-3">{countryInfo}</Row>
 
-      <Row>
-        <Col>
-          <Image src={country.flags.png} />
-        </Col>
-        <Col>
-          <h2>{country.name.common}</h2>
-          <Row>
-            <Col>
-              <p>
-                <b>Official Name:</b> {country.name.official}
-              </p>
-              <p>
-                <b>Region:</b> {country.region}
-              </p>
-              <p>
-                <b>Subregion:</b> {country.subregion}
-              </p>
-              {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
-              <p>
-                <b>Languages:</b> {getLanguages()}
-              </p>
-            </Col>
-            <Col>
-              <p>
-                <b>Currency:</b> {getCurrencies()}
-              </p>
-            </Col>
-          </Row>
-          <p>
-            <b>Bordering Countries:</b> {getBorderCountries()}
-          </p>
-        </Col>
-      </Row>
-
-      {/* Additional Country Info - 2nd API */}
-      <Row>
-      <h3>Country Holidays</h3>
-        {holidaysCards}
-      </Row>
-    </>
+        {/* Additional Country Info - 2nd API */}
+        <Row>
+          <h3>Country Holidays</h3>
+          {holidaysCards}
+        </Row>
+      </Container>
+    </AnimatedPage>
   );
 };
 

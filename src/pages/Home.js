@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Row, Spinner } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
+import { motion } from "framer-motion";
 
 // Import Components
 import CountryCard from "../components/CountryCard";
 import Search from "../components/Search";
+import AnimatedPage from "../components/AnimatedPage";
+import AnimatedCard from "../components/AnimatedCard";
 
 const COUNTRIES_URL = "https://restcountries.com/v3.1";
 
@@ -80,26 +83,27 @@ const Home = (props) => {
   // Impliment sorting - asc/desc,
 
   const countryCards = filteredCountries ? (
-
-  filteredCountries.map((country, i) => {
-    return (
-      <CountryCard
-        key={i}
-        flag={country.flags.svg}
-        name={country.name.common}
-        region={country.region}
-        alt={country.flags.alt}
-        capital={country.capital}
-        population={country.population}
-      />
-    );
-  })
+    filteredCountries.map((country, i) => {
+      return (
+        <AnimatedCard index={i} key={i}>
+          <CountryCard
+            flag={country.flags.svg}
+            name={country.name.common}
+            region={country.region}
+            alt={country.flags.alt}
+            capital={country.capital}
+            population={country.population}
+          />
+        </AnimatedCard>
+      );
+    })
   ) : (
     <Spinner />
   );
 
   return (
-    <>
+    // Initial animation and exit props defining fade
+    <AnimatedPage>
       {/* Passing down function as prop to nav */}
       <Search
         onHandleChange={onHandleChange}
@@ -109,7 +113,7 @@ const Home = (props) => {
       <Row className="g-4 justify-contend-start" md={3} xs={1}>
         {countryCards}
       </Row>
-    </>
+    </AnimatedPage>
   );
 };
 

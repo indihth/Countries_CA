@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Row } from "react-bootstrap";
 
+// Import components
+import AnimatedPage from "../components/AnimatedPage";
+import AnimatedCard from "../components/AnimatedCard";
 import CountryCard from "../components/CountryCard";
 
 const COUNTRIES_URL = "https://restcountries.com/v3.1";
@@ -26,47 +29,49 @@ const Home = (props) => {
       });
   }, [countriesList, props.filterRegion]);
 
-//   useEffect(() => {
-//     if (props.searchTerm < 3) {
-//       // Doesn't start showing filtered countries until 3 characters inputted
-//       setFilteredCountries(countriesList);
-//     } else {
-//       let filter = countriesList.filter((country) => {
-//         // name of country and search term to lower case before filter
-//         return country.name.common
-//           .toLowerCase()
-//           .includes(props.searchTerm.toLowerCase());
-//       });
-//       setFilteredCountries(filter);
-//     }
-//     console.log("search");
+  //   useEffect(() => {
+  //     if (props.searchTerm < 3) {
+  //       // Doesn't start showing filtered countries until 3 characters inputted
+  //       setFilteredCountries(countriesList);
+  //     } else {
+  //       let filter = countriesList.filter((country) => {
+  //         // name of country and search term to lower case before filter
+  //         return country.name.common
+  //           .toLowerCase()
+  //           .includes(props.searchTerm.toLowerCase());
+  //       });
+  //       setFilteredCountries(filter);
+  //     }
+  //     console.log("search");
 
-//     // Dependencies - runs useEffect when the searchTerm changes
-//   }, [countriesList, props.searchTerm]);
+  //     // Dependencies - runs useEffect when the searchTerm changes
+  //   }, [countriesList, props.searchTerm]);
 
   // Impliment sorting - asc/desc,
 
   let countryCards = filteredCountries.map((country, i) => {
     return (
-      <CountryCard
-        key={i}
-        flag={country.flags.svg}
-        name={country.name.common}
-        region={country.region}
-        alt={country.flags.alt}
-        capital={country.capital}
-        population={country.population}
-      />
+      <AnimatedCard index={i}>
+        <CountryCard
+          key={i}
+          flag={country.flags.svg}
+          name={country.name.common}
+          region={country.region}
+          alt={country.flags.alt}
+          capital={country.capital}
+          population={country.population}
+        />
+      </AnimatedCard>
     );
   });
 
   return (
-    <>
-    <h2>{region}</h2>
+    <AnimatedPage>
+      <h2>{region}</h2>
       <Row className="g-4 justify-contend-start" md={3} xs={1}>
         {countryCards}
       </Row>
-    </>
+    </AnimatedPage>
   );
 };
 
