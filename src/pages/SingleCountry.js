@@ -118,9 +118,9 @@ const SingleCountry = () => {
 
   const countryInfo = country ? (
       <Row className="mb-3">
-        <div>
-          <h4>Country Info</h4>
-          <div>
+        <Row>
+          <h4 className="mb-3">Country Info</h4>
+          <Col>
             <p>
               <b>Official Name:</b> {country.name.official}
             </p>
@@ -130,18 +130,21 @@ const SingleCountry = () => {
             <p>
               <b>Subregion:</b> {country.subregion}
             </p>
+            </Col>
             {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
-            <p>
-              <b>Languages:</b> {getLanguages()}
-            </p>
-            <p>
-              <b>Currency:</b> {getCurrencies()}
-            </p>
-            <p>
-              <b>Bordering Countries:</b> {getBorderCountries()}
-            </p>
-          </div>
-        </div>
+            <Col>
+              <p>
+                <b>Languages:</b> {getLanguages()}
+              </p>
+              <p>
+                <b>Currency:</b> {getCurrencies()}
+              </p>
+              <p>
+                <b>Bordering Countries:</b> {getBorderCountries()}
+              </p>
+            </Col>
+          
+        </Row>
       </Row>
   ) : (
     <Spinner />
@@ -150,7 +153,7 @@ const SingleCountry = () => {
   const holidaysCards = holidays ? (
     // Limits to showing only 5 holidays
     holidays
-      .slice(0, 5)
+      .slice(0, 4)
       .map((holiday, i) => <CountryExtra key={i} holiday={holiday} />)
   ) : (
     <Spinner />
@@ -166,7 +169,7 @@ const SingleCountry = () => {
         <Container style={{ width: "50%", height: "100%"}} className="pt-3 my-auto" key={location.pathname} location={location}>
           <Row>
             <div className="d-flex justify-content-center mb-4 px-5">
-              <Image src={country.flags.svg} fluid rounded style={{ maxHeight: "30vh" }} />
+              <Image src={country.flags.svg} fluid rounded style={{ maxHeight: "25vh" }} />
             </div>
             <div className="d-flex justify-content-center mb-3">
               <h1 className="mx-auto">{country.name.common}</h1>
@@ -176,8 +179,6 @@ const SingleCountry = () => {
           <div className="d-flex justify-content-center mb-2">
           <Button onClick={() => {setIsVisiable(true)}} variant="secondary" size="sm" className="me-1"><i class="bi bi-caret-left"></i> </Button>
           <Button onClick={() => {setIsVisiable(false)}} variant="secondary" size="sm"><i class="bi bi-caret-right"></i> </Button>
-              {/* {isVisible ?  <Button onClick={handleClick}><i class="bi bi-caret-left"></i> </Button> : <Button onClick={handleClick}><i class="bi bi-caret-right"></i> </Button> } */}
-              {/* {isVisible ? "Show Country Holidays" : "Show Country Info"} */}
           
           </div>
           {isVisible ? <AnimatedCountryInfo place={true}>
@@ -185,10 +186,9 @@ const SingleCountry = () => {
           </AnimatedCountryInfo> : ""}
           {/* Additional Country Info - 2nd API */}
           {!isVisible ?  <AnimatedCountryInfo place={false}>
-            <Row> <h4>Country Holidays</h4> {holidaysCards} </Row>
+            <Row> <h4 className="mb-3">Country Holidays</h4> {holidaysCards} </Row>
           </AnimatedCountryInfo> : ""}
-          
-        
+
         </Container>
       </AnimatePresence>
     </AnimatedPage>

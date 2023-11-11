@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Row } from "react-bootstrap";
+import { Row, Spinner } from "react-bootstrap";
 
 // Import components
 import AnimatedPage from "../components/AnimatedPage";
@@ -49,7 +49,8 @@ const Home = (props) => {
 
   // Impliment sorting - asc/desc,
 
-  let countryCards = filteredCountries.map((country, i) => {
+  const countryCards = filteredCountries ? (
+   filteredCountries.map((country, i) => {
     return (
       <AnimatedCard index={i}>
         <CountryCard
@@ -63,7 +64,10 @@ const Home = (props) => {
         />
       </AnimatedCard>
     );
-  });
+  })
+  ) : (
+    <Spinner />
+  );
 
   return (
     <AnimatedPage>
