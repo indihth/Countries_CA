@@ -20,7 +20,7 @@ const CountryCard = (props) => {
   };
 
   return (
-    <Card className="px-0 shadow-sm" border="light" style={{ width: "18rem" }}>
+    <Card className="px-0 shadow-sm mx-auto" border="light" style={{ width: "18rem" }}>
       <Card.Img
         src={props.flag}
         variant="top"

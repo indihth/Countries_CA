@@ -16,7 +16,7 @@ const AnimatedRoutes = () => {
     // Waits for all animations to complete before unmounting component - resolves Home from loading lower on screen and then moving up
     <AnimatePresence mode="wait">
       {/* AnimatePresence needs a unique key to know when the page have changed */}
-        <Routes location={location} key={location.pathname}>
+        <Routes location={location} key={location.pathname} >
           <Route path="/" element={<Home />} />
           {/* " : " used to create a route param */}
           <Route path="/country/:name" element={<SingleCountry />} />

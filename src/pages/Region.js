@@ -67,7 +67,7 @@ const Home = (props) => {
 
   return (
     <AnimatedPage>
-      <h2>{region}</h2>
+      <h2 className="text-center mb-4 pt-3">{region}</h2>
       <Row className="g-4 justify-contend-start" md={3} xs={1}>
         {countryCards}
       </Row>

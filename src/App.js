@@ -9,14 +9,10 @@ function App() {
 
   return (
     <Router>
-      <Container className="mx-auto">
-        <Row>
-          <Col>
-          <Navbar/>
+      <Container className="mx-auto homeContainer">
+          <Navbar className="mb-3"/>
           {/* useLocation() can only be accessed from a component WITHIN Router, routes in own component solves this */}
            <AnimatedRoutes/>
-          </Col>
-        </Row>
       </Container>
     </Router>
   );

@@ -4,10 +4,18 @@ body {
 
 a {
     text-decoration: none;
-    color: inherit;
+    color: black;
 }
 
 p {
     margin-bottom: 6px;
     font-size: 14px;
+}
+
+.nav-search-container {
+    width: 40vw;
+}
+
+.homeContainer {
+    width: 70vw;
 }

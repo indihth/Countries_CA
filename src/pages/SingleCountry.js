@@ -1,23 +1,27 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { Container, Row, Col, Spinner, Image, Button } from "react-bootstrap";
+import { AnimatePresence } from "framer-motion";
+
 
 // Import components
 import CountryExtra from "../components/CountryExtra";
 import AnimatedPage from "../components/AnimatedPage";
+import AnimatedCountryInfo from "../components/AnimatedCountryInfo";
 
 // Defind API key
-const APIKEY = "rjPctvKzPIKN5jiG61ubySPYQ4VQ40E5";
+const APIKEY_HOLIDAYS = "rg2HSqaODB5HP3j5hTxL1EZSK5nKrkJf";
 
 const SingleCountry = () => {
   // References the route param from App.js Route
   let { name } = useParams();
+  const location = useLocation();
 
   const [countriesList, setCountriesList] = useState([]);
   const [country, setCountry] = useState("");
   const [holidays, setHolidays] = useState();
+  const [isVisible, setIsVisiable] = useState(true);
 
   // Button to switch between info cards
   let toggle = true;
@@ -54,10 +58,11 @@ const SingleCountry = () => {
     if (countryCCA2) {
       axios
         .get(
-          `https://calendarific.com/api/v2/holidays?&api_key=${APIKEY}&country=${countryCCA2}&year=2023`
+          `https://calendarific.com/api/v2/holidays?&api_key=${APIKEY_HOLIDAYS}&country=${countryCCA2}&year=2023`
         )
         .then((res) => {
           setHolidays(res.data.response.holidays);
+          console.log("holidays request")
         })
         .catch((err) => console.error(err));
     }
@@ -112,37 +117,32 @@ const SingleCountry = () => {
   };
 
   const countryInfo = country ? (
-    <Row className="mb-3">
-      <div className="d-flex justify-content-center mb-5 px-5">
-        <Image src={country.flags.svg} fluid rounded />
-      </div>
-      <div className="d-flex justify-content-center mb-3">
-        <h2 className="mx-auto">{country.name.common}</h2>
-      </div>
-      <div>
+      <Row className="mb-3">
         <div>
-          <p>
-            <b>Official Name:</b> {country.name.official}
-          </p>
-          <p>
-            <b>Region:</b> {country.region}
-          </p>
-          <p>
-            <b>Subregion:</b> {country.subregion}
-          </p>
-          {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
-          <p>
-            <b>Languages:</b> {getLanguages()}
-          </p>
-          <p>
-            <b>Currency:</b> {getCurrencies()}
-          </p>
-          <p>
-            <b>Bordering Countries:</b> {getBorderCountries()}
-          </p>
+          <h4>Country Info</h4>
+          <div>
+            <p>
+              <b>Official Name:</b> {country.name.official}
+            </p>
+            <p>
+              <b>Region:</b> {country.region}
+            </p>
+            <p>
+              <b>Subregion:</b> {country.subregion}
+            </p>
+            {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
+            <p>
+              <b>Languages:</b> {getLanguages()}
+            </p>
+            <p>
+              <b>Currency:</b> {getCurrencies()}
+            </p>
+            <p>
+              <b>Bordering Countries:</b> {getBorderCountries()}
+            </p>
+          </div>
         </div>
-      </div>
-    </Row>
+      </Row>
   ) : (
     <Spinner />
   );
@@ -157,21 +157,40 @@ const SingleCountry = () => {
   );
 
   const handleClick = () => {
-    toggle = !toggle;
-  }
+    setIsVisiable((v) => !v);
+  };
 
   return (
     <AnimatedPage>
-      <Container style={{ width: "50%" }} className="pt-5 mt-5">
-        <Button onClick={handleClick}>Click</Button>
-        <Row className="mb-3">{countryInfo}</Row>
+      <AnimatePresence mode="wait">
+        <Container style={{ width: "50%", height: "100%"}} className="pt-3 my-auto" key={location.pathname} location={location}>
+          <Row>
+            <div className="d-flex justify-content-center mb-4 px-5">
+              <Image src={country.flags.svg} fluid rounded style={{ maxHeight: "30vh" }} />
+            </div>
+            <div className="d-flex justify-content-center mb-3">
+              <h1 className="mx-auto">{country.name.common}</h1>
+            </div>
+          </Row>
 
-        {/* Additional Country Info - 2nd API */}
-        <Row>
-          <h3>Country Holidays</h3>
-          {holidaysCards}
-        </Row>
-      </Container>
+          <div className="d-flex justify-content-center mb-2">
+          <Button onClick={() => {setIsVisiable(true)}} variant="secondary" size="sm" className="me-1"><i class="bi bi-caret-left"></i> </Button>
+          <Button onClick={() => {setIsVisiable(false)}} variant="secondary" size="sm"><i class="bi bi-caret-right"></i> </Button>
+              {/* {isVisible ?  <Button onClick={handleClick}><i class="bi bi-caret-left"></i> </Button> : <Button onClick={handleClick}><i class="bi bi-caret-right"></i> </Button> } */}
+              {/* {isVisible ? "Show Country Holidays" : "Show Country Info"} */}
+          
+          </div>
+          {isVisible ? <AnimatedCountryInfo place={true}>
+            <Row className="mb-3"> {countryInfo} </Row>
+          </AnimatedCountryInfo> : ""}
+          {/* Additional Country Info - 2nd API */}
+          {!isVisible ?  <AnimatedCountryInfo place={false}>
+            <Row> <h4>Country Holidays</h4> {holidaysCards} </Row>
+          </AnimatedCountryInfo> : ""}
+          
+        
+        </Container>
+      </AnimatePresence>
     </AnimatedPage>
   );
 };

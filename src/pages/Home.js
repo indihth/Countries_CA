@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Row, Spinner } from "react-bootstrap";
+import { Container, Row, Spinner } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { motion } from "framer-motion";
 
@@ -85,7 +85,7 @@ const Home = (props) => {
   const countryCards = filteredCountries ? (
     filteredCountries.map((country, i) => {
       return (
-        <AnimatedCard index={i} key={i}>
+        <AnimatedCard index={i} key={i} className="">
           <CountryCard
             flag={country.flags.svg}
             name={country.name.common}
@@ -105,14 +105,16 @@ const Home = (props) => {
     // Initial animation and exit props defining fade
     <AnimatedPage>
       {/* Passing down function as prop to nav */}
-      <Search
-        onHandleChange={onHandleChange}
-        searchTerm={searchTerm}
-        onFilterRegion={onFilterRegion}
-      />
-      <Row className="g-4 justify-contend-start" md={3} xs={1}>
-        {countryCards}
-      </Row>
+      <Container>
+        <Search
+          onHandleChange={onHandleChange}
+          searchTerm={searchTerm}
+          onFilterRegion={onFilterRegion}
+        />
+        <Row className="g-4" md={3} xs={1}>
+          {countryCards}
+        </Row>
+      </Container>
     </AnimatedPage>
   );
 };

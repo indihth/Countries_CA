@@ -2,9 +2,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom/dist";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
+import{ Col, Nav, NavDropdown, Dropdown }from "react-bootstrap/";
 import NavbarBS from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 
 // Import JSON
 import regions from "../assets/regions.json";
@@ -30,24 +29,27 @@ const Search = (props) => {
   };
 
   return (
-    <>
-      <Form.Control
-        placeholder="Search..."
-        type="text"
-        onChange={handleInputChange}
-        value={props.searchTerm}
-        name="search"
-      />
+    <Container className="nav-search-container d-flex mb-5">
+      <Col xs={8} className="me-2">
+        <Form.Control
+          placeholder="Search..."
+          type="text"
+          onChange={handleInputChange}
+          value={props.searchTerm}
+          name="search"
+        />
+      </Col>
 
-      <Form.Select onChange={handleFilterRegion} value={regions.name}>
-        <option key={1}>Filter by Region</option>
-
-        {regions.map((region, i) => (
-          <option key={i + 1} value={region.name} eventkey={region.name}>
-            {region.name}
-          </option>
-        ))}
-      </Form.Select>
+      <Col xs={4}>
+        <Form.Select onChange={handleFilterRegion} value={regions.name}>
+          <option key={1}>Filter by Region</option>
+          {regions.map((region, i) => (
+            <option key={i + 1} value={region.name} eventkey={region.name}>
+              {region.name}
+            </option>
+          ))}
+        </Form.Select>
+      </Col>
 
       {/* <Dropdown
         onSubmit={handleFilterRegion}
@@ -66,7 +68,7 @@ const Search = (props) => {
           ))}
         </Dropdown.Menu>
       </Dropdown> */}
-    </>
+    </Container>
   );
 };
 
