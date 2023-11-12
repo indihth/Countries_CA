@@ -8,7 +8,9 @@ import AnimatedPage from "../components/AnimatedPage";
 import AnimatedCard from "../components/AnimatedCard";
 import CountryCard from "../components/CountryCard";
 
-const COUNTRIES_URL = "https://restcountries.com/v3.1";
+/////////////////////////////
+// Page identical to Home except for search and filter functionality
+/////////////////////////////
 
 const Home = (props) => {
   let { region } = useParams();
@@ -29,25 +31,6 @@ const Home = (props) => {
       });
   }, [countriesList, props.filterRegion]);
 
-  //   useEffect(() => {
-  //     if (props.searchTerm < 3) {
-  //       // Doesn't start showing filtered countries until 3 characters inputted
-  //       setFilteredCountries(countriesList);
-  //     } else {
-  //       let filter = countriesList.filter((country) => {
-  //         // name of country and search term to lower case before filter
-  //         return country.name.common
-  //           .toLowerCase()
-  //           .includes(props.searchTerm.toLowerCase());
-  //       });
-  //       setFilteredCountries(filter);
-  //     }
-  //     console.log("search");
-
-  //     // Dependencies - runs useEffect when the searchTerm changes
-  //   }, [countriesList, props.searchTerm]);
-
-  // Impliment sorting - asc/desc,
 
   const countryCards = filteredCountries ? (
    filteredCountries.map((country, i) => {

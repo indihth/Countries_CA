@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
 
+//////////////////
+// Gives fade animation on page transitions
+//////////////////
+
 const animations = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },

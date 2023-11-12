@@ -1,16 +1,16 @@
 import { motion } from "framer-motion";
 
-const animations = {
-  initial: { opacity: 0, x: 100 },
-  animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: -100}
-};
+//////////////////
+// Fade animation on between Country and Holiday info components on SingleCountry page
+//////////////////
 
 const AnimatedCountryInfo = ({ children, place }) => {
+
+  // Initialise start and end variables
   let initialP;
   let endP;
-console.log(place)
 
+  // Place prop defines if the component is the first or second to be display - change positions accordingly
   if (place == true) {
     initialP = -100;
     endP = -100;
@@ -21,7 +21,6 @@ console.log(place)
 
   return (
     <motion.div
-      // variants={animations}
       initial={{ opacity: 0, x: initialP }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: endP }}

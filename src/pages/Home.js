@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Row, Spinner } from "react-bootstrap";
-import Pagination from "react-bootstrap/Pagination";
-import { motion } from "framer-motion";
 
 // Import Components
 import CountryCard from "../components/CountryCard";
@@ -10,13 +8,10 @@ import Search from "../components/Search";
 import AnimatedPage from "../components/AnimatedPage";
 import AnimatedCard from "../components/AnimatedCard";
 
-const COUNTRIES_URL = "https://restcountries.com/v3.1";
-
 const Home = (props) => {
   // Emptry array by default
   const [countriesList, setCountriesList] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
-  const [countriesRegionList, setCountriesRegionList] = useState([]);
 
   // set filter region
   const [filterRegion, setFilterRegion] = useState("All");
@@ -39,10 +34,11 @@ const Home = (props) => {
 
   // Search
   useEffect(() => {
+    // Doesn't start showing filtered countries until 3 characters inputted
     if (searchTerm < 3) {
-      // Doesn't start showing filtered countries until 3 characters inputted
       filterRegions();
     } else {
+      // Filters array and compares the starting characters to search term
       let filter = filteredCountries.filter((country) => {
         // name of country and search term to lower case before filter
         return country.name.common
@@ -55,17 +51,20 @@ const Home = (props) => {
 
   // Region Search
   useEffect(() => {
+    // Filters regions whenever the filterRegion state is changed
     filterRegions();
-    // }, []);
   }, [countriesList, filterRegion]);
 
   const filterRegions = () => {
+    // If region is set to all or is blank by default, keep showing all countries
     if (filterRegion === "All" || filterRegion === "") {
       setFilteredCountries(countriesList);
     } else {
+      // Filters all countries by the filterRegion state and put into new variable
       let filter = countriesList.filter((country) => {
         return country.region === filterRegion;
       });
+      // Sets filteredCountries to the filter variable
       setFilteredCountries(filter);
     }
   };
@@ -80,11 +79,11 @@ const Home = (props) => {
     setFilterRegion(e.target.value);
   };
 
-  // Impliment sorting - asc/desc,
-
+  // Create variable to hold all countries, passes values as props to the CountryCard
   const countryCards = filteredCountries ? (
     filteredCountries.map((country, i) => {
       return (
+        // Wrap card in component for animation
         <AnimatedCard index={i} key={i} className="">
           <CountryCard
             flag={country.flags.svg}
@@ -104,8 +103,8 @@ const Home = (props) => {
   return (
     // Initial animation and exit props defining fade
     <AnimatedPage>
-      {/* Passing down function as prop to nav */}
       <Container>
+      {/* Passing down function as prop to Search */}
         <Search
           onHandleChange={onHandleChange}
           searchTerm={searchTerm}

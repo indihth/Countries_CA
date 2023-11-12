@@ -1,9 +1,8 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Container, Row, Col, Spinner, Image, Button } from "react-bootstrap";
+import { Container, Card, Row, Col, Spinner, Image, Button } from "react-bootstrap";
 import { AnimatePresence } from "framer-motion";
-
 
 // Import components
 import CountryExtra from "../components/CountryExtra";
@@ -23,14 +22,11 @@ const SingleCountry = () => {
   const [holidays, setHolidays] = useState();
   const [isVisible, setIsVisiable] = useState(true);
 
-  // Button to switch between info cards
-  let toggle = true;
-
+  // Retreiving all countries - need for getting country border full name
   useEffect(() => {
     axios
       .get("https://restcountries.com/v3.1/all")
       .then((response) => {
-        // console.log(response.data);
         setCountriesList(response.data);
       })
       .catch((error) => {
@@ -62,15 +58,23 @@ const SingleCountry = () => {
         )
         .then((res) => {
           setHolidays(res.data.response.holidays);
-          console.log("holidays request")
+          console.log("holidays request");
         })
         .catch((err) => console.error(err));
     }
   }, [countryCCA2]); // Include countryCCA2 as a dependency to the second useEffect
 
+  // Show spinner if country hasn't loaded yet
   if (!country) {
     return <Spinner />;
   }
+
+
+//////////////////////////////
+// All getX function below loop through the returned data and maps to a new array
+// that is simple to display, using .join() to add punctuation between values. 
+// Returns text of N/A if array is empty or doesn't exist. E.g Not official lanuage
+//////////////////////////////
 
   const getCurrencies = () => {
     // Change all arrays to useState
@@ -116,60 +120,67 @@ const SingleCountry = () => {
     return newCountries.join(", ");
   };
 
+  // Show loading spinner while countryInfo is loading
   const countryInfo = country ? (
-      <Row className="mb-3">
-        <Row>
-          <h4 className="mb-3">Country Info</h4>
-          <Col>
-            <p>
-              <b>Official Name:</b> {country.name.official}
-            </p>
-            <p>
-              <b>Region:</b> {country.region}
-            </p>
-            <p>
-              <b>Subregion:</b> {country.subregion}
-            </p>
-            </Col>
-            {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
-            <Col>
-              <p>
-                <b>Languages:</b> {getLanguages()}
-              </p>
-              <p>
-                <b>Currency:</b> {getCurrencies()}
-              </p>
-              <p>
-                <b>Bordering Countries:</b> {getBorderCountries()}
-              </p>
-            </Col>
-          
-        </Row>
-      </Row>
+      <>
+        <h4 className="mb-3">Country Info</h4>
+        <Col>
+          <p>
+            <b>Official Name:</b> {country.name.official}
+          </p>
+          <p>
+            <b>Region:</b> {country.region}
+          </p>
+          <p>
+            <b>Subregion:</b> {country.subregion}
+          </p>
+        </Col>
+        {/* Returns array of currencies, then display 'name' of first currency in array. Use for languages */}
+        <Col>
+          <p>
+            <b>Languages:</b> {getLanguages()}
+          </p>
+          <p>
+            <b>Currency:</b> {getCurrencies()}
+          </p>
+          <p>
+            <b>Bordering Countries:</b> {getBorderCountries()}
+          </p>
+        </Col>
+      </>
   ) : (
     <Spinner />
   );
 
   const holidaysCards = holidays ? (
-    // Limits to showing only 5 holidays
     holidays
-      .slice(0, 4)
+      .slice(0, 4)  // Limits to showing only 5 holidays
       .map((holiday, i) => <CountryExtra key={i} holiday={holiday} />)
   ) : (
     <Spinner />
   );
 
-  const handleClick = () => {
-    setIsVisiable((v) => !v);
-  };
-
   return (
+    // Entire page wrapped in Framer Motion component for transitions
     <AnimatedPage>
+      {/* Component used to detect change in page, Mode waits for all animations to complete before unmounting component */}
       <AnimatePresence mode="wait">
-        <Container style={{ width: "50%", height: "100%"}} className="pt-3 my-auto" key={location.pathname} location={location}>
+
+        {/* key and location used to tell AnimatePresence when the component has changed (unmounted) */}
+        <Container
+          style={{ width: "60%", height: "34rem" }}
+          className="pt-5 m-auto"
+          key={location.pathname}
+          location={location}
+        >
           <Row>
             <div className="d-flex justify-content-center mb-4 px-5">
-              <Image src={country.flags.svg} fluid rounded style={{ maxHeight: "25vh" }} />
+              <Image
+                src={country.flags.svg}
+                fluid
+                rounded
+                style={{ maxHeight: "25vh" }}
+              />
             </div>
             <div className="d-flex justify-content-center mb-3">
               <h1 className="mx-auto">{country.name.common}</h1>
@@ -177,18 +188,48 @@ const SingleCountry = () => {
           </Row>
 
           <div className="d-flex justify-content-center mb-2">
-          <Button onClick={() => {setIsVisiable(true)}} variant="secondary" size="sm" className="me-1"><i class="bi bi-caret-left"></i> </Button>
-          <Button onClick={() => {setIsVisiable(false)}} variant="secondary" size="sm"><i class="bi bi-caret-right"></i> </Button>
-          
-          </div>
-          {isVisible ? <AnimatedCountryInfo place={true}>
-            <Row className="mb-3"> {countryInfo} </Row>
-          </AnimatedCountryInfo> : ""}
-          {/* Additional Country Info - 2nd API */}
-          {!isVisible ?  <AnimatedCountryInfo place={false}>
-            <Row> <h4 className="mb-3">Country Holidays</h4> {holidaysCards} </Row>
-          </AnimatedCountryInfo> : ""}
 
+            {/* Buttons to change state to display either Country Info or Holidays */}
+            <Button
+              onClick={() => {
+                setIsVisiable(true);
+              }}
+              variant="secondary"
+              size="sm"
+              className="me-1"
+            >
+              <i class="bi bi-caret-left"></i>{" "}
+            </Button>
+            <Button
+              onClick={() => {
+                setIsVisiable(false);
+              }}
+              variant="secondary"
+              size="sm"
+            >
+              <i class="bi bi-caret-right"></i>{" "}
+            </Button>
+          </div>
+
+          {/* Conditional rendering, check isVisible bool that is set with the button above */}
+          {isVisible ? (
+            <AnimatedCountryInfo place={true}>
+              <Row> {countryInfo} </Row>
+            </AnimatedCountryInfo>
+          ) : (
+            ""
+          )}
+          {/* Additional Country Info - 2nd API */}
+          {!isVisible ? (
+            <AnimatedCountryInfo place={false}>
+              <Row>
+                {" "}
+                <h4 className="mb-3">Country Holidays</h4> {holidaysCards}{" "}
+              </Row>
+            </AnimatedCountryInfo>
+          ) : (
+            ""
+          )}
         </Container>
       </AnimatePresence>
     </AnimatedPage>

@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import{ Col, Nav, NavDropdown, Dropdown }from "react-bootstrap/";
 import NavbarBS from "react-bootstrap/Navbar";
 
-// Import JSON
+// Import JSON - cleaner code and easier to maintain in seperate document. Allows for later changes
 import regions from "../assets/regions.json";
 
 const Search = (props) => {
@@ -30,6 +30,7 @@ const Search = (props) => {
 
   return (
     <Container className="nav-search-container d-flex mb-5">
+      {/* Search bar */}
       <Col xs={8} className="me-2">
         <Form.Control
           placeholder="Search..."
@@ -40,6 +41,7 @@ const Search = (props) => {
         />
       </Col>
 
+      {/* Region filter */}
       <Col xs={4}>
         <Form.Select onChange={handleFilterRegion} value={regions.name}>
           <option key={1}>Filter by Region</option>
@@ -50,24 +52,6 @@ const Search = (props) => {
           ))}
         </Form.Select>
       </Col>
-
-      {/* <Dropdown
-        onSubmit={handleFilterRegion}
-        onChange={handleFilterRegion}
-        value={regions.name}
-      >
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          Filter by Region
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          {regions.map((region, i) => (
-            <Dropdown.Item key={i} value={region.name.toLowerCase()}>
-              {region.name}
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      </Dropdown> */}
     </Container>
   );
 };

@@ -11,6 +11,7 @@ const Navbar = () => {
 
   return (
     <Container className="nav-search-container my-3">
+      {/* Links to Home page */}
       <Link
         className="h1 d-flex justify-content-center"
         href="/"
