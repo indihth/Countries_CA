@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { Container, Row, Col } from "react-bootstrap";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Container } from "react-bootstrap";
 // Import pages
 import Navbar from "./components/Navbar";
 import AnimatedRoutes from "./components/AnimatedRoutes";
